@@ -1,4 +1,5 @@
 using System;
+using GameCore.Players;
 
 namespace GameCore
 {
@@ -7,47 +8,61 @@ namespace GameCore
         Player1 = 1,
         Player2 = 2,
         Player3 = 3,
-        Player4 = 4
+        Player4 = 4,
+        NoPlayer = 0
     }
 
+    /**
+     * Turn Manager for progressing current players turn.
+     *
+     * Also moves to the next player in the correct order to advance the game.
+     */
     public class TurnManager
     {
         public static event Action<PlayerId,PlayerId> OnTransitionPlayerTurn;
 
 
-        private PlayerId _currentPlayer;
-        private PlayerId _player;
-
-        public bool IsCurrentPlayerTurn => _currentPlayer == _player;
-
-        public void SetPlayer(PlayerId player)
-        {
-            _player = player;
-            _currentPlayer = player;
-        }
+        private Player _currentPlayer;
+        private PlayerId _currentPlayerName = PlayerId.NoPlayer;
 
         // This should probably be private...
         public void NextPlayerStartTurn()
         {
-            PlayerId previousPlayer = _currentPlayer;
-            switch (_currentPlayer)
+            PlayerId previousPlayer = _currentPlayerName;
+            Player[] players = GameManager.Instance.GetPlayers();
+
+            if (_currentPlayerName == PlayerId.NoPlayer)
             {
-                case PlayerId.Player1:
-                    _currentPlayer = PlayerId.Player2;
-                    break;
-                case PlayerId.Player2:
-                    _currentPlayer = PlayerId.Player3;
-                    break;
-                case PlayerId.Player3:
-                    _currentPlayer = PlayerId.Player4;
-                    break;
-                case PlayerId.Player4:
-                    _currentPlayer = PlayerId.Player1;
-                    break;
+                _currentPlayer = players[0];
+                _currentPlayerName = _currentPlayer.Id;
+            }
+            else
+            {
+                for (int i = 0; i < players.Length; i++)
+                {
+                    if (players[i].Id == _currentPlayerName)
+                    {
+                        _currentPlayer = players[(i + 1) % players.Length];
+                        _currentPlayerName = _currentPlayer.Id;
+                        break;
+                    }
+                }
             }
 
-            OnTransitionPlayerTurn?.Invoke(previousPlayer, _currentPlayer);
+            OnTransitionPlayerTurn?.Invoke(previousPlayer, _currentPlayerName);
             GameManager.Instance.StartNewTurn();
+        }
+
+        public void TakeTurn()
+        {
+            _currentPlayer.StartTurn();
+
+            while (_currentPlayer.CanGo)
+            {
+                _currentPlayer.TakeTurn();
+            }
+
+            _currentPlayer.EndTurn();
         }
 
         public void StartListening()
@@ -82,6 +97,5 @@ namespace GameCore
         }
 
         #endregion
-
     }
 }

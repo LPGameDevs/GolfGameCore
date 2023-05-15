@@ -1,14 +1,15 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using GameCore;
-using GameCore.States;
+using GameCore.Players;
 
 namespace GamePlayer
 {
     public class Program
     {
 
-        static void Main(string[] args)
+        static void Main()
         {
             // Setup
             SetupGame();
@@ -23,13 +24,8 @@ namespace GamePlayer
             Console.WriteLine("Setup Game");
             GolfStateMachine.OnTransitionState += LogStateTransition;
             TurnManager.OnTransitionPlayerTurn += LogPlayerTransition;
+            PlayerManager.OnFetchPlayers += FetchPlayers;
 
-
-            IStateMachine stateMachine = new GolfStateMachine();
-            GameManager.Instance.SetStateMachine(stateMachine);
-            GameManager.Instance.StartListening();
-
-            TurnManager.Instance.SetPlayer(PlayerId.Player1);
             TurnManager.Instance.StartListening();
         }
 
@@ -37,61 +33,26 @@ namespace GamePlayer
         {
             Console.WriteLine("Play Game");
 
+            // Starts game in ViewCards state.
             GameManager.Instance.StartNewGame();
+
+            // @todo Handle viewing cards.
+
+            // Moves to player 1 and Draw cards state.
+            TurnManager.Instance.NextPlayerStartTurn();
 
             while (!GameManager.Instance.IsGameOver)
             {
-                Console.Write(".");
-
-                if (GameManager.Instance.GetCurrentState() == nameof(ViewCards))
-                {
-                    Console.WriteLine("View Cards");
-                    PlayerEvents.ViewCards();
-                }
-                else if (GameManager.Instance.GetCurrentState() == nameof(DrawCard))
-                {
-                    Console.WriteLine("Draw Card");
-                    PlayerEvents.DrawCard();
-                }
-                else if (GameManager.Instance.GetCurrentState() == nameof(DiscardCard))
-                {
-                    Console.WriteLine("Discard Card");
-                    PlayerEvents.DiscardCard();
-                }
-                else if (GameManager.Instance.GetCurrentState() == nameof(CompleteTurn))
-                {
-                    if (!GameManager.Instance.IsLastRound)
-                    {
-                        Console.WriteLine("Call Last Round");
-                        PlayerEvents.CallLastRound();
-                    }
-                    else
-                    {
-                        Console.WriteLine("Complete Turn");
-                        PlayerEvents.CompleteTurn();
-                    }
-                }
-                else if (GameManager.Instance.GetCurrentState() == nameof(Waiting) && GameManager.Instance.IsLastRound && TurnManager.Instance.IsCurrentPlayerTurn)
-                {
-                    GameManager.Instance.GameOver();
-                }
-                else if (GameManager.Instance.GetCurrentState() == nameof(Waiting))
-                {
-                    TurnManager.Instance.NextPlayerStartTurn();
-                }
-                else
-                {
-                    GameManager.Instance.StartNewTurn();
-                }
+                TurnManager.Instance.TakeTurn();
             }
-
         }
 
         private static void EndGame()
         {
             Console.WriteLine("End Game");
             GolfStateMachine.OnTransitionState -= LogStateTransition;
-            TurnManager.OnTransitionPlayerTurn += LogPlayerTransition;
+            TurnManager.OnTransitionPlayerTurn -= LogPlayerTransition;
+            PlayerManager.OnFetchPlayers -= FetchPlayers;
 
             GameManager.Instance.StopListening();
             TurnManager.Instance.StopListening();
@@ -104,6 +65,14 @@ namespace GamePlayer
         private static void LogPlayerTransition(PlayerId arg1, PlayerId arg2)
         {
             Console.WriteLine($"Moving turn from {arg1.ToString()} to {arg2.ToString()}");
+        }
+
+        private static void FetchPlayers(List<Player> players)
+        {
+            IPlayerBrain brain1 = new AIBrain();
+            players.Add(new Player(brain1, PlayerId.Player1));
+            IPlayerBrain brain2 = new AIBrain();
+            players.Add(new Player(brain2, PlayerId.Player2));
         }
     }
 }

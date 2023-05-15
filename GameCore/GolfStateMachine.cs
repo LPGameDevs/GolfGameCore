@@ -51,8 +51,7 @@ namespace GameCore
 
         private void OnExitCompleteTurn()
         {
-            IState nextState = new Waiting();
-            TransitionTo(nextState);
+            // No state transitions on complete turn.
         }
 
         public override void StartListening()

@@ -1,23 +1,43 @@
+using System.Collections.Generic;
 using GameCore;
+using GameCore.Players;
 
 namespace Tests;
 
 public class SetupHelpers
 {
-    public void MinimalSetup()
+    private int _currentPlayerCount = 0;
+
+    public SetupHelpers()
     {
-        IStateMachine stateMachine = new GolfStateMachine();
-        GameManager.Instance.SetStateMachine(stateMachine);
-        GameManager.Instance.StartListening();
+        StartListening();
     }
 
-    public void AddPlayers(int numberOfPlayers = 4)
+    public void MinimalSetup()
     {
-        Player[] players = new Player[numberOfPlayers];
-        for (int i = 0; i < numberOfPlayers; i++)
+    }
+
+    public void SetPlayers(int numberOfPlayers = 4)
+    {
+        _currentPlayerCount = numberOfPlayers;
+    }
+
+    public void OnFetchPlayers(List<Player> playerList)
+    {
+        for (int i = 0; i < _currentPlayerCount; i++)
         {
-            players[i] = new Player();
+            AIBrain brain = new AIBrain();
+            playerList.Add(new Player(brain));
         }
-        GameManager.Instance.SetPlayers(players);
+    }
+
+    private void StartListening()
+    {
+        PlayerManager.OnFetchPlayers += OnFetchPlayers;
+    }
+
+    public void StopListening()
+    {
+        PlayerManager.OnFetchPlayers -= OnFetchPlayers;
     }
 }

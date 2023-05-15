@@ -1,5 +1,6 @@
 
 using System;
+using GameCore.Players;
 
 namespace GameCore
 {
@@ -14,21 +15,12 @@ namespace GameCore
 
         public bool IsGameOver => _isGameOver;
 
-        IStateMachine _stateMachine;
-        Player[] _players = Array.Empty<Player>();
-
-        public void SetStateMachine(IStateMachine stateMachine)
-        {
-            _stateMachine = stateMachine;
-        }
-        public void SetPlayers(Player[] players)
-        {
-            _players = players;
-        }
+        private readonly IStateMachine _stateMachine;
+        private readonly PlayerManager _playerManager;
 
         public void StartNewGame()
         {
-            _players = Array.Empty<Player>();
+            _playerManager.Refresh();
             _stateMachine.StartNewGame();
             StartNewMatch();
         }
@@ -41,10 +33,6 @@ namespace GameCore
 
         public void StartNewTurn()
         {
-            if (!TurnManager.Instance.IsCurrentPlayerTurn)
-            {
-                return;
-            }
             _stateMachine.StartNewTurn();
         }
 
@@ -60,11 +48,11 @@ namespace GameCore
 
         public Player[] GetPlayers()
         {
-            if (_players.Length == 0)
+            if (_playerManager.GetPlayers().Length == 0)
             {
                 throw new NoPlayersException();
             }
-            return _players;
+            return _playerManager.GetPlayers();
         }
 
         public void StartListening()
@@ -85,6 +73,11 @@ namespace GameCore
 
         private GameManager()
         {
+            IStateMachine stateMachine = new GolfStateMachine();
+            _stateMachine = stateMachine;
+            _playerManager = new PlayerManager();
+
+            StartListening();
         }
 
         public static GameManager Instance
@@ -106,27 +99,15 @@ namespace GameCore
         {
             _isGameOver = true;
         }
+
+        public Player GetPlayer(PlayerId id)
+        {
+            return _playerManager.GetPlayer(id);
+        }
     }
 
     public class NoPlayersException : Exception
     {
-    }
-
-    public class Player
-    {
-        public int Points() => 0;
-        public Card[] Cards { get; }
-
-        public Player()
-        {
-            Cards = new[]
-            {
-                new Card(1),
-                new Card(7),
-                new Card(3),
-                new Card(4)
-            };
-        }
     }
 
     public class Card
