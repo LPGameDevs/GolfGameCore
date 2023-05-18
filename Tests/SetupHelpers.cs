@@ -15,6 +15,7 @@ public class SetupHelpers
 
     public void MinimalSetup()
     {
+        GameManager.Instance.StartNewGame();
     }
 
     public void SetPlayers(int numberOfPlayers = 4)
@@ -24,10 +25,18 @@ public class SetupHelpers
 
     public void OnFetchPlayers(List<Player> playerList)
     {
+        Dictionary<int, PlayerId> playermap = new Dictionary<int, PlayerId>()
+        {
+            {0, PlayerId.Player1},
+            {1, PlayerId.Player2},
+            {2, PlayerId.Player3},
+            {3, PlayerId.Player4},
+        };
+
         for (int i = 0; i < _currentPlayerCount; i++)
         {
             AIBrain brain = new AIBrain();
-            playerList.Add(new Player(brain));
+            playerList.Add(new Player(brain, playermap[i]));
         }
     }
 

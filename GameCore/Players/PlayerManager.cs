@@ -26,6 +26,7 @@ namespace GameCore.Players
 
         public void Refresh()
         {
+            DeckManager.Instance.Shuffle();
             _players.Clear();
             OnFetchPlayers?.Invoke(_players);
         }

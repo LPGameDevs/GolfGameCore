@@ -2,5 +2,10 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a760d562_002Dbc52_002D4ab3_002D8a7e_002Df32e3d3721f2/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Tests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;NUnit3x::60E5B3CC-FE03-4E30-91BA-738582F62DB9::net6.0::Tests.GameSetupTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::60E5B3CC-FE03-4E30-91BA-738582F62DB9::net6.0::Tests.PlayerTurnTests.TestPlayers&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::60E5B3CC-FE03-4E30-91BA-738582F62DB9::net6.0::Tests.PlayerTurnTests.TestPlayersDiscardDeck&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::60E5B3CC-FE03-4E30-91BA-738582F62DB9::net6.0::Tests.PlayerTurnTests.TestPlayersDrawDiscardAndPlace&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::60E5B3CC-FE03-4E30-91BA-738582F62DB9::net6.0::Tests.PlayerTurnTests.TestPlayersDrawDeckAndDiscard&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::60E5B3CC-FE03-4E30-91BA-738582F62DB9::net6.0::Tests.PlayerTurnTests.TestPlayersDrawDiscardAndDiscard&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

@@ -6,11 +6,12 @@ namespace Tests;
 
 public class GameSetupTests
 {
-    private SetupHelpers _setupHelpers = new SetupHelpers();
+    private SetupHelpers _setupHelpers;
 
     [SetUp]
     public void Setup()
     {
+        _setupHelpers = new SetupHelpers();
         _setupHelpers.MinimalSetup();
     }
 
@@ -46,13 +47,21 @@ public class GameSetupTests
     [Test]
     public void TestPoints()
     {
-        GameManager.Instance.StartNewGame();
         _setupHelpers.SetPlayers();
+        GameManager.Instance.StartNewGame();
 
         Player[] players = GameManager.Instance.GetPlayers();
         for (int i = 0; i < players.Length; i++)
         {
             Assert.That(players[i].Points, Is.EqualTo(0));
         }
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        GameManager.Instance.StopListening();
+        TurnManager.Instance.StopListening();
+        _setupHelpers.StopListening();
     }
 }

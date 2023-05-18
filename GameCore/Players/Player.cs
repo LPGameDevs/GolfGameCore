@@ -12,6 +12,8 @@ namespace GameCore.Players
         public PlayerId Id { get; private set; }
         public bool CanGo => _brain.CanGo();
 
+        private Card _holdingCard = null;
+
         public Player(IPlayerBrain brain, PlayerId id = PlayerId.NoPlayer)
         {
             _brain = brain;
@@ -20,10 +22,10 @@ namespace GameCore.Players
 
             Cards = new[]
             {
-                new Card(1),
-                new Card(7),
-                new Card(3),
-                new Card(4)
+                new Card(DeckManager.Instance.DrawCard()),
+                new Card(DeckManager.Instance.DrawCard()),
+                new Card(DeckManager.Instance.DrawCard()),
+                new Card(DeckManager.Instance.DrawCard()),
             };
         }
 
@@ -40,6 +42,30 @@ namespace GameCore.Players
         public void EndTurn()
         {
             TurnsPlayed++;
+        }
+
+
+        public void HoldCard(int card)
+        {
+            _holdingCard = new Card(card);
+        }
+
+        public void PlaceCard(int index)
+        {
+            // Swap holding card with card at index.
+            (Cards[index], _holdingCard) = (_holdingCard, Cards[index]);
+            GameManager.Instance.DiscardCard();
+        }
+
+        public void DiscardCard()
+        {
+            DeckManager.Instance.DiscardCard(_holdingCard.Number);
+            _holdingCard = null;
+        }
+
+        public int GetHoldingCard()
+        {
+            return _holdingCard?.Number ?? -1;
         }
     }
 }

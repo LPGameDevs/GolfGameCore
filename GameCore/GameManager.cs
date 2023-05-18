@@ -20,8 +20,12 @@ namespace GameCore
 
         public void StartNewGame()
         {
+            StartListening();
+            TurnManager.Instance.Refresh();
             _playerManager.Refresh();
             _stateMachine.StartNewGame();
+            DeckManager.Instance.TurnOverDeck();
+
             StartNewMatch();
         }
 
@@ -76,8 +80,6 @@ namespace GameCore
             IStateMachine stateMachine = new GolfStateMachine();
             _stateMachine = stateMachine;
             _playerManager = new PlayerManager();
-
-            StartListening();
         }
 
         public static GameManager Instance
@@ -103,6 +105,48 @@ namespace GameCore
         public Player GetPlayer(PlayerId id)
         {
             return _playerManager.GetPlayer(id);
+        }
+
+        public void DrawCard(DeckType deck = DeckType.Draw)
+        {
+            if (GetCurrentState() != nameof(DrawCard))
+            {
+                return;
+            }
+
+            var card = DeckManager.Instance.DrawCard(deck);
+
+            var currentPlayer = TurnManager.Instance.GetCurrentTurn();
+            var player = GetPlayer(currentPlayer);
+            player.HoldCard(card);
+
+            PlayerEvents.DrawCard();
+        }
+
+        public void PlaceCard(int index)
+        {
+            if (GetCurrentState() != nameof(DiscardCard))
+            {
+                return;
+            }
+
+            var currentPlayer = TurnManager.Instance.GetCurrentTurn();
+            var player = GetPlayer(currentPlayer);
+            player.PlaceCard(index);
+        }
+
+        public void DiscardCard()
+        {
+            if (GetCurrentState() != nameof(DiscardCard))
+            {
+                return;
+            }
+
+            var currentPlayer = TurnManager.Instance.GetCurrentTurn();
+            var player = GetPlayer(currentPlayer);
+            player.DiscardCard();
+
+            PlayerEvents.DiscardCard();
         }
     }
 

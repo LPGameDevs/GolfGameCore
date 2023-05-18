@@ -21,7 +21,6 @@ namespace GameCore
     {
         public static event Action<PlayerId,PlayerId> OnTransitionPlayerTurn;
 
-
         private Player _currentPlayer;
         private PlayerId _currentPlayerName = PlayerId.NoPlayer;
 
@@ -63,6 +62,17 @@ namespace GameCore
             }
 
             _currentPlayer.EndTurn();
+        }
+
+        public PlayerId GetCurrentTurn()
+        {
+            return _currentPlayerName;
+        }
+
+        public void Refresh()
+        {
+            _currentPlayer = null;
+            _currentPlayerName = PlayerId.NoPlayer;
         }
 
         public void StartListening()
