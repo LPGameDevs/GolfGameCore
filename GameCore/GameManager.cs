@@ -107,11 +107,11 @@ namespace GameCore
             return _playerManager.GetPlayer(id);
         }
 
-        public void DrawCard(DeckType deck = DeckType.Draw)
+        public bool DrawCard(DeckType deck = DeckType.Draw)
         {
             if (GetCurrentState() != nameof(DrawCard))
             {
-                return;
+                return false;
             }
 
             var card = DeckManager.Instance.DrawCard(deck);
@@ -121,9 +121,10 @@ namespace GameCore
             player.HoldCard(card);
 
             PlayerEvents.DrawCard();
+            return true;
         }
 
-        public void PlaceCard(int index)
+        public void PlaceCard(Card card)
         {
             if (GetCurrentState() != nameof(DiscardCard))
             {
@@ -131,8 +132,14 @@ namespace GameCore
             }
 
             var currentPlayer = TurnManager.Instance.GetCurrentTurn();
+            if (card.Player != currentPlayer)
+            {
+                return;
+            }
+
+
             var player = GetPlayer(currentPlayer);
-            player.PlaceCard(index);
+            player.PlaceCard(card.Index);
         }
 
         public void DiscardCard()
@@ -156,11 +163,15 @@ namespace GameCore
 
     public class Card
     {
-        public int Number { get; private set; }
+        public int Index { get; private set; }
+        public int Number { get; set; }
+        public PlayerId Player { get; set; }
 
-        public Card(int number)
+        public Card(int number, int index, PlayerId player)
         {
             Number = number;
+            Index = index;
+            Player = player;
         }
     }
 }

@@ -22,10 +22,10 @@ namespace GameCore.Players
 
             Cards = new[]
             {
-                new Card(DeckManager.Instance.DrawCard()),
-                new Card(DeckManager.Instance.DrawCard()),
-                new Card(DeckManager.Instance.DrawCard()),
-                new Card(DeckManager.Instance.DrawCard()),
+                new Card(DeckManager.Instance.DrawCard(), 0, id),
+                new Card(DeckManager.Instance.DrawCard(), 1, id),
+                new Card(DeckManager.Instance.DrawCard(), 2, id),
+                new Card(DeckManager.Instance.DrawCard(), 3, id),
             };
         }
 
@@ -47,13 +47,17 @@ namespace GameCore.Players
 
         public void HoldCard(int card)
         {
-            _holdingCard = new Card(card);
+            _holdingCard = new Card(card, -1, PlayerId.NoPlayer);
         }
 
         public void PlaceCard(int index)
         {
             // Swap holding card with card at index.
-            (Cards[index], _holdingCard) = (_holdingCard, Cards[index]);
+            int holdingCard = _holdingCard.Number;
+
+            _holdingCard.Number = Cards[index].Number;
+            Cards[index].Number = holdingCard;
+
             GameManager.Instance.DiscardCard();
         }
 

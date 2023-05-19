@@ -16,6 +16,8 @@ namespace GameCore
      */
     public class DeckManager
     {
+        public static event Action OnCardDiscarded;
+
         private Queue<int> _deck = new Queue<int>();
         private LinkedList<int> _discard = new LinkedList<int>();
 
@@ -69,6 +71,7 @@ namespace GameCore
         public void DiscardCard(int number)
         {
             _discard.AddLast(number);
+            OnCardDiscarded?.Invoke();
         }
 
         public void Shuffle()

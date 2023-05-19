@@ -52,7 +52,7 @@ namespace Tests
             holdingCard = players[0].GetHoldingCard();
             Assert.That(holdingCard, Is.EqualTo(10));
 
-            GameManager.Instance.PlaceCard(1);
+            GameManager.Instance.PlaceCard(players[0].Cards[1]);
             Assert.That(GameManager.Instance.GetCurrentState(), Is.EqualTo(nameof(CompleteTurn)));
             holdingCard = players[0].GetHoldingCard();
             Assert.That(holdingCard, Is.EqualTo(-1));
@@ -107,7 +107,7 @@ namespace Tests
             int holdingCard = players[0].GetHoldingCard();
             Assert.That(holdingCard, Is.EqualTo(9));
 
-            GameManager.Instance.PlaceCard(3);
+            GameManager.Instance.PlaceCard(players[0].Cards[3]);
 
             Assert.That(players[0].Cards[0].Number, Is.EqualTo(1));
             Assert.That(players[0].Cards[1].Number, Is.EqualTo(2));
