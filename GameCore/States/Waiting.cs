@@ -5,7 +5,6 @@ namespace GameCore.States
     {
         public void Enter()
         {
-            var test = "";
         }
 
         public void Exit()

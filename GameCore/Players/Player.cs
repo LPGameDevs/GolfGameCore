@@ -1,7 +1,11 @@
+using System;
+
 namespace GameCore.Players
 {
     public class Player
     {
+        public static event Action<bool> OnPlayerHoldCard;
+
         private IPlayerBrain _brain;
 
         public int Points() => 0;
@@ -48,6 +52,7 @@ namespace GameCore.Players
         public void HoldCard(int card)
         {
             _holdingCard = new Card(card, -1, PlayerId.NoPlayer);
+            OnPlayerHoldCard?.Invoke(true);
         }
 
         public void PlaceCard(int index)
@@ -65,6 +70,7 @@ namespace GameCore.Players
         {
             DeckManager.Instance.DiscardCard(_holdingCard.Number);
             _holdingCard = null;
+            OnPlayerHoldCard?.Invoke(false);
         }
 
         public int GetHoldingCard()
