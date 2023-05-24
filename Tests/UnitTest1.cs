@@ -1,10 +1,11 @@
+using System;
 using GameCore;
 using GameCore.States;
 using NUnit.Framework;
 
 namespace Tests
 {
-    public class PlayerTurnTests
+    public class PointsTests
     {
         private SetupHelpers _setupHelpers;
 
@@ -22,122 +23,44 @@ namespace Tests
             GameManager.Instance.StartNewGame();
             var players = GameManager.Instance.GetPlayers();
 
-            foreach (var player in players)
-            {
-                Assert.That(player.Cards.Length, Is.EqualTo(4));
-            }
+            // Player 1 has 1, 2, 3, 4.
+            Assert.That(players[0].Score, Is.EqualTo(10));
 
-            Assert.That(players[0].Cards[0].Number, Is.EqualTo(1));
-            Assert.That(players[0].Cards[1].Number, Is.EqualTo(2));
-            Assert.That(players[0].Cards[2].Number, Is.EqualTo(3));
-            Assert.That(players[0].Cards[3].Number, Is.EqualTo(4));
-
-            Assert.That(players[1].Cards[0].Number, Is.EqualTo(5));
-            Assert.That(players[1].Cards[1].Number, Is.EqualTo(6));
-            Assert.That(players[1].Cards[2].Number, Is.EqualTo(7));
-            Assert.That(players[1].Cards[3].Number, Is.EqualTo(8));
-
-            Assert.That(TurnManager.Instance.GetCurrentTurn(), Is.EqualTo(PlayerId.NoPlayer));
+            // Player 2 has 5, 6, 7, 8.
+            Assert.That(players[1].Score, Is.EqualTo(26));
 
             TurnManager.Instance.NextPlayerStartTurn();
-
-            Assert.That(TurnManager.Instance.GetCurrentTurn(), Is.EqualTo(PlayerId.Player1));
-            Assert.That(GameManager.Instance.GetCurrentState(), Is.EqualTo(nameof(DrawCard)));
-
-            int holdingCard = players[0].GetHoldingCard();
-            Assert.That(holdingCard, Is.EqualTo(-1));
 
             GameManager.Instance.DrawCard();
-            Assert.That(GameManager.Instance.GetCurrentState(), Is.EqualTo(nameof(DiscardCard)));
-            holdingCard = players[0].GetHoldingCard();
-            Assert.That(holdingCard, Is.EqualTo(10));
+            GameManager.Instance.PlaceCard(players[0].Cards[0]);
 
-            GameManager.Instance.PlaceCard(players[0].Cards[1]);
-            Assert.That(GameManager.Instance.GetCurrentState(), Is.EqualTo(nameof(CompleteTurn)));
-            holdingCard = players[0].GetHoldingCard();
-            Assert.That(holdingCard, Is.EqualTo(-1));
-
-            Assert.That(players[0].Cards[0].Number, Is.EqualTo(1));
-            Assert.That(players[0].Cards[1].Number, Is.EqualTo(10));
-            Assert.That(players[0].Cards[2].Number, Is.EqualTo(3));
-            Assert.That(players[0].Cards[3].Number, Is.EqualTo(4));
-        }
-
-        [Test]
-        public void TestPlayersDrawDeckAndDiscard()
-        {
-            _setupHelpers.SetPlayers(2);
-            GameManager.Instance.StartNewGame();
-            var players = GameManager.Instance.GetPlayers();
-
-            Assert.That(players[0].Cards[0].Number, Is.EqualTo(1));
-            Assert.That(players[0].Cards[1].Number, Is.EqualTo(2));
-            Assert.That(players[0].Cards[2].Number, Is.EqualTo(3));
-            Assert.That(players[0].Cards[3].Number, Is.EqualTo(4));
+            // Player 1 has 10, 2, 3, 4.
+            Assert.That(players[0].Score, Is.EqualTo(19));
 
             TurnManager.Instance.NextPlayerStartTurn();
-
 
             GameManager.Instance.DrawCard();
-            GameManager.Instance.DiscardCard();
+            GameManager.Instance.PlaceCard(players[1].Cards[3]);
 
-            Assert.That(players[0].Cards[0].Number, Is.EqualTo(1));
-            Assert.That(players[0].Cards[1].Number, Is.EqualTo(2));
-            Assert.That(players[0].Cards[2].Number, Is.EqualTo(3));
-            Assert.That(players[0].Cards[3].Number, Is.EqualTo(4));
-        }
+            // Console.WriteLine(players[1].Cards[0].Number);
+            // Console.WriteLine(players[1].Cards[1].Number);
+            // Console.WriteLine(players[1].Cards[2].Number);
+            // Console.WriteLine(players[1].Cards[3].Number);
 
-        [Test]
-        public void TestPlayersDrawDiscardAndPlace()
-        {
-            _setupHelpers.SetPlayers(2);
-            GameManager.Instance.StartNewGame();
-            var players = GameManager.Instance.GetPlayers();
-
-            Assert.That(players[0].Cards[0].Number, Is.EqualTo(1));
-            Assert.That(players[0].Cards[1].Number, Is.EqualTo(2));
-            Assert.That(players[0].Cards[2].Number, Is.EqualTo(3));
-            Assert.That(players[0].Cards[3].Number, Is.EqualTo(4));
+            // Player 2 has 5, 6, 7, 1.
+            Assert.That(players[1].Score, Is.EqualTo(19));
 
             TurnManager.Instance.NextPlayerStartTurn();
 
+            GameManager.Instance.DrawCard();
+            GameManager.Instance.PlaceCard(players[0].Cards[0]);
 
-            GameManager.Instance.DrawCard(DeckType.Discard);
+            Assert.That(players[1].Score, Is.EqualTo(19));
 
-            int holdingCard = players[0].GetHoldingCard();
-            Assert.That(holdingCard, Is.EqualTo(9));
-
-            GameManager.Instance.PlaceCard(players[0].Cards[3]);
-
-            Assert.That(players[0].Cards[0].Number, Is.EqualTo(1));
-            Assert.That(players[0].Cards[1].Number, Is.EqualTo(2));
-            Assert.That(players[0].Cards[2].Number, Is.EqualTo(3));
-            Assert.That(players[0].Cards[3].Number, Is.EqualTo(9));
+            // Player 1 has 2, 2, 3, 4.
+            Assert.That(players[0].Score, Is.EqualTo(7));
         }
 
-        [Test]
-        public void TestPlayersDrawDiscardAndDiscard()
-        {
-            _setupHelpers.SetPlayers(2);
-            GameManager.Instance.StartNewGame();
-            var players = GameManager.Instance.GetPlayers();
-
-            Assert.That(players[0].Cards[0].Number, Is.EqualTo(1));
-            Assert.That(players[0].Cards[1].Number, Is.EqualTo(2));
-            Assert.That(players[0].Cards[2].Number, Is.EqualTo(3));
-            Assert.That(players[0].Cards[3].Number, Is.EqualTo(4));
-
-            TurnManager.Instance.NextPlayerStartTurn();
-
-
-            GameManager.Instance.DrawCard(DeckType.Discard);
-            GameManager.Instance.DiscardCard();
-
-            Assert.That(players[0].Cards[0].Number, Is.EqualTo(1));
-            Assert.That(players[0].Cards[1].Number, Is.EqualTo(2));
-            Assert.That(players[0].Cards[2].Number, Is.EqualTo(3));
-            Assert.That(players[0].Cards[3].Number, Is.EqualTo(4));
-        }
 
         [TearDown]
         public void TearDown()

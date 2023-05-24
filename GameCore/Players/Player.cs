@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace GameCore.Players
 {
@@ -76,6 +77,36 @@ namespace GameCore.Players
         public int GetHoldingCard()
         {
             return _holdingCard?.Number ?? -1;
+        }
+
+        public int Score()
+        {
+            int score = 0;
+
+            var cards = new Dictionary<int, int>();
+
+            // Count cards.
+            foreach (var card in Cards)
+            {
+                cards[card.Number] = cards.TryGetValue(card.Number, out var existingCardCount) ? existingCardCount + 1 : 1;
+            }
+
+            foreach (KeyValuePair<int,int> cardGroup in cards)
+            {
+                switch (cardGroup.Value)
+                {
+                    case 2:
+                    case 4:
+                        break;
+
+                    case 3:
+                    case 1:
+                        score += cardGroup.Key;
+                        break;
+
+                }
+            }
+            return score;
         }
     }
 }

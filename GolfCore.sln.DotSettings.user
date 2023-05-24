@@ -7,5 +7,6 @@
     &lt;TestId&gt;NUnit3x::60E5B3CC-FE03-4E30-91BA-738582F62DB9::net6.0::Tests.PlayerTurnTests.TestPlayersDrawDiscardAndPlace&lt;/TestId&gt;
     &lt;TestId&gt;NUnit3x::60E5B3CC-FE03-4E30-91BA-738582F62DB9::net6.0::Tests.PlayerTurnTests.TestPlayersDrawDeckAndDiscard&lt;/TestId&gt;
     &lt;TestId&gt;NUnit3x::60E5B3CC-FE03-4E30-91BA-738582F62DB9::net6.0::Tests.PlayerTurnTests.TestPlayersDrawDiscardAndDiscard&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::60E5B3CC-FE03-4E30-91BA-738582F62DB9::net6.0::Tests.PointsTests.TestPlayers&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
