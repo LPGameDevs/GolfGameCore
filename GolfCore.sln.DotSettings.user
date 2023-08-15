@@ -9,4 +9,5 @@
     &lt;TestId&gt;NUnit3x::60E5B3CC-FE03-4E30-91BA-738582F62DB9::net6.0::Tests.PlayerTurnTests.TestPlayersDrawDiscardAndDiscard&lt;/TestId&gt;
     &lt;TestId&gt;NUnit3x::60E5B3CC-FE03-4E30-91BA-738582F62DB9::net6.0::Tests.PointsTests.TestPlayers&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
-&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
+&lt;/SessionState&gt;</s:String>
+	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=60e5b3cc_002Dfe03_002D4e30_002D91ba_002D738582f62db9_0023Tests/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

@@ -16,7 +16,6 @@ namespace GameCore.Players
 
         public PlayerManager()
         {
-            Refresh();
         }
 
         public Player[] GetPlayers()
@@ -26,7 +25,8 @@ namespace GameCore.Players
 
         public void Refresh()
         {
-            DeckManager.Instance.Shuffle();
+            // Cyclical reference.
+            // DeckManager.Instance.Shuffle();
             _players.Clear();
             OnFetchPlayers?.Invoke(_players);
         }

@@ -18,8 +18,11 @@ namespace GameCore
         private readonly IStateMachine _stateMachine;
         private readonly PlayerManager _playerManager;
 
-        public void StartNewGame()
+        private GameState _gameState;
+
+        public void StartNewGame(GameState gameState)
         {
+            _gameState = gameState;
             StartListening();
             TurnManager.Instance.Refresh();
             _playerManager.Refresh();
@@ -121,6 +124,9 @@ namespace GameCore
             player.HoldCard(card);
 
             PlayerEvents.DrawCard();
+
+            Console.WriteLine($"DrawCard: {card}");
+
             return true;
         }
 
@@ -140,6 +146,9 @@ namespace GameCore
 
             var player = GetPlayer(currentPlayer);
             player.PlaceCard(card.Index);
+
+            Console.WriteLine($"PlaceCard: {card}");
+
         }
 
         public void DiscardCard()
@@ -151,9 +160,17 @@ namespace GameCore
 
             var currentPlayer = TurnManager.Instance.GetCurrentTurn();
             var player = GetPlayer(currentPlayer);
+            Console.WriteLine($"DiscardCard: {player.GetHoldingCard()}");
+
+
             player.DiscardCard();
 
             PlayerEvents.DiscardCard();
+        }
+
+        public CardDto[] GetCards()
+        {
+            return _gameState.deck;
         }
     }
 
@@ -164,12 +181,12 @@ namespace GameCore
     public class Card
     {
         public int Index { get; private set; }
-        public int Number { get; set; }
+        public CardDto CardData { get; set; }
         public PlayerId Player { get; set; }
 
-        public Card(int number, int index, PlayerId player)
+        public Card(CardDto cardData, int index, PlayerId player)
         {
-            Number = number;
+            CardData = cardData;
             Index = index;
             Player = player;
         }

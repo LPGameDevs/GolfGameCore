@@ -18,12 +18,12 @@ namespace GameCore
     {
         public static event Action OnCardDiscarded;
 
-        private Queue<int> _deck = new Queue<int>();
-        private LinkedList<int> _discard = new LinkedList<int>();
+        private Queue<CardDto> _deck = new Queue<CardDto>();
+        private LinkedList<CardDto> _discard = new LinkedList<CardDto>();
 
-        public int DrawCard(DeckType deck = DeckType.Draw)
+        public CardDto DrawCard(DeckType deck = DeckType.Draw)
         {
-            int card;
+            CardDto card;
             if (deck == DeckType.Draw)
             {
                 card = DrawDeckCard();
@@ -36,7 +36,7 @@ namespace GameCore
             return card;
         }
 
-        private int DrawDeckCard()
+        private CardDto DrawDeckCard()
         {
             if (_deck.Count == 0)
             {
@@ -46,19 +46,19 @@ namespace GameCore
             return _deck.Dequeue();
         }
 
-        private int DrawDiscardCard()
+        private CardDto DrawDiscardCard()
         {
             if (_discard.Count == 0)
             {
                 throw new DrawFromEmptyDiscardException();
             }
 
-            int card = _discard.Last.Value;
+            CardDto card = _discard.Last.Value;
             _discard.RemoveLast();
             return card;
         }
 
-        public int GetDiscardTopCard()
+        public CardDto GetDiscardTopCard()
         {
             if (_discard.Count == 0)
             {
@@ -68,30 +68,31 @@ namespace GameCore
             return _discard.Last.Value;
         }
 
-        public void DiscardCard(int number)
+        public void DiscardCard(CardDto card)
         {
-            _discard.AddLast(number);
+            _discard.AddLast(card);
             OnCardDiscarded?.Invoke();
+        }
+
+        public void AddCards(CardDto[] cards)
+        {
+            _deck.Clear();
+
+            foreach (var card in cards)
+            {
+                _deck.Enqueue(card);
+            }
         }
 
         public void Shuffle()
         {
             _deck.Clear();
-            _deck.Enqueue(1);
-            _deck.Enqueue(2);
-            _deck.Enqueue(3);
-            _deck.Enqueue(4);
-            _deck.Enqueue(5);
-            _deck.Enqueue(6);
-            _deck.Enqueue(7);
-            _deck.Enqueue(8);
-            _deck.Enqueue(9);
-            _deck.Enqueue(10);
+            // @todo Shuffle discard pile into deck.
         }
 
         public void TurnOverDeck()
         {
-            int drawCard = DrawDeckCard();
+            CardDto drawCard = DrawDeckCard();
             DiscardCard(drawCard);
         }
 
@@ -107,9 +108,9 @@ namespace GameCore
 
         private static DeckManager _instance;
 
-        private DeckManager()
+        private DeckManager(CardDto[] cards)
         {
-            Shuffle();
+            AddCards(cards);
         }
 
         public static DeckManager Instance
@@ -118,7 +119,8 @@ namespace GameCore
             {
                 if (_instance == null)
                 {
-                    _instance = new DeckManager();
+                    CardDto[] cards = GameManager.Instance.GetCards();
+                    _instance = new DeckManager(cards);
                 }
 
                 return _instance;

@@ -27,15 +27,15 @@ namespace Tests
                 Assert.That(player.Cards.Length, Is.EqualTo(4));
             }
 
-            Assert.That(players[0].Cards[0].Number, Is.EqualTo(1));
-            Assert.That(players[0].Cards[1].Number, Is.EqualTo(2));
-            Assert.That(players[0].Cards[2].Number, Is.EqualTo(3));
-            Assert.That(players[0].Cards[3].Number, Is.EqualTo(4));
+            Assert.That(players[0].Cards[0].CardData, Is.EqualTo(1));
+            Assert.That(players[0].Cards[1].CardData, Is.EqualTo(2));
+            Assert.That(players[0].Cards[2].CardData, Is.EqualTo(3));
+            Assert.That(players[0].Cards[3].CardData, Is.EqualTo(4));
 
-            Assert.That(players[1].Cards[0].Number, Is.EqualTo(5));
-            Assert.That(players[1].Cards[1].Number, Is.EqualTo(6));
-            Assert.That(players[1].Cards[2].Number, Is.EqualTo(7));
-            Assert.That(players[1].Cards[3].Number, Is.EqualTo(8));
+            Assert.That(players[1].Cards[0].CardData, Is.EqualTo(5));
+            Assert.That(players[1].Cards[1].CardData, Is.EqualTo(6));
+            Assert.That(players[1].Cards[2].CardData, Is.EqualTo(7));
+            Assert.That(players[1].Cards[3].CardData, Is.EqualTo(8));
 
             Assert.That(TurnManager.Instance.GetCurrentTurn(), Is.EqualTo(PlayerId.NoPlayer));
 
@@ -57,10 +57,10 @@ namespace Tests
             holdingCard = players[0].GetHoldingCard();
             Assert.That(holdingCard, Is.EqualTo(-1));
 
-            Assert.That(players[0].Cards[0].Number, Is.EqualTo(1));
-            Assert.That(players[0].Cards[1].Number, Is.EqualTo(10));
-            Assert.That(players[0].Cards[2].Number, Is.EqualTo(3));
-            Assert.That(players[0].Cards[3].Number, Is.EqualTo(4));
+            Assert.That(players[0].Cards[0].CardData, Is.EqualTo(1));
+            Assert.That(players[0].Cards[1].CardData, Is.EqualTo(10));
+            Assert.That(players[0].Cards[2].CardData, Is.EqualTo(3));
+            Assert.That(players[0].Cards[3].CardData, Is.EqualTo(4));
         }
 
         [Test]
@@ -70,10 +70,10 @@ namespace Tests
             GameManager.Instance.StartNewGame();
             var players = GameManager.Instance.GetPlayers();
 
-            Assert.That(players[0].Cards[0].Number, Is.EqualTo(1));
-            Assert.That(players[0].Cards[1].Number, Is.EqualTo(2));
-            Assert.That(players[0].Cards[2].Number, Is.EqualTo(3));
-            Assert.That(players[0].Cards[3].Number, Is.EqualTo(4));
+            Assert.That(players[0].Cards[0].CardData, Is.EqualTo(1));
+            Assert.That(players[0].Cards[1].CardData, Is.EqualTo(2));
+            Assert.That(players[0].Cards[2].CardData, Is.EqualTo(3));
+            Assert.That(players[0].Cards[3].CardData, Is.EqualTo(4));
 
             TurnManager.Instance.NextPlayerStartTurn();
 
@@ -81,10 +81,10 @@ namespace Tests
             GameManager.Instance.DrawCard();
             GameManager.Instance.DiscardCard();
 
-            Assert.That(players[0].Cards[0].Number, Is.EqualTo(1));
-            Assert.That(players[0].Cards[1].Number, Is.EqualTo(2));
-            Assert.That(players[0].Cards[2].Number, Is.EqualTo(3));
-            Assert.That(players[0].Cards[3].Number, Is.EqualTo(4));
+            Assert.That(players[0].Cards[0].CardData, Is.EqualTo(1));
+            Assert.That(players[0].Cards[1].CardData, Is.EqualTo(2));
+            Assert.That(players[0].Cards[2].CardData, Is.EqualTo(3));
+            Assert.That(players[0].Cards[3].CardData, Is.EqualTo(4));
         }
 
         [Test]
@@ -94,10 +94,10 @@ namespace Tests
             GameManager.Instance.StartNewGame();
             var players = GameManager.Instance.GetPlayers();
 
-            Assert.That(players[0].Cards[0].Number, Is.EqualTo(1));
-            Assert.That(players[0].Cards[1].Number, Is.EqualTo(2));
-            Assert.That(players[0].Cards[2].Number, Is.EqualTo(3));
-            Assert.That(players[0].Cards[3].Number, Is.EqualTo(4));
+            Assert.That(players[0].Cards[0].CardData, Is.EqualTo(1));
+            Assert.That(players[0].Cards[1].CardData, Is.EqualTo(2));
+            Assert.That(players[0].Cards[2].CardData, Is.EqualTo(3));
+            Assert.That(players[0].Cards[3].CardData, Is.EqualTo(4));
 
             TurnManager.Instance.NextPlayerStartTurn();
 
@@ -109,10 +109,10 @@ namespace Tests
 
             GameManager.Instance.PlaceCard(players[0].Cards[3]);
 
-            Assert.That(players[0].Cards[0].Number, Is.EqualTo(1));
-            Assert.That(players[0].Cards[1].Number, Is.EqualTo(2));
-            Assert.That(players[0].Cards[2].Number, Is.EqualTo(3));
-            Assert.That(players[0].Cards[3].Number, Is.EqualTo(9));
+            Assert.That(players[0].Cards[0].CardData, Is.EqualTo(1));
+            Assert.That(players[0].Cards[1].CardData, Is.EqualTo(2));
+            Assert.That(players[0].Cards[2].CardData, Is.EqualTo(3));
+            Assert.That(players[0].Cards[3].CardData, Is.EqualTo(9));
         }
 
         [Test]
@@ -122,10 +122,10 @@ namespace Tests
             GameManager.Instance.StartNewGame();
             var players = GameManager.Instance.GetPlayers();
 
-            Assert.That(players[0].Cards[0].Number, Is.EqualTo(1));
-            Assert.That(players[0].Cards[1].Number, Is.EqualTo(2));
-            Assert.That(players[0].Cards[2].Number, Is.EqualTo(3));
-            Assert.That(players[0].Cards[3].Number, Is.EqualTo(4));
+            Assert.That(players[0].Cards[0].CardData, Is.EqualTo(1));
+            Assert.That(players[0].Cards[1].CardData, Is.EqualTo(2));
+            Assert.That(players[0].Cards[2].CardData, Is.EqualTo(3));
+            Assert.That(players[0].Cards[3].CardData, Is.EqualTo(4));
 
             TurnManager.Instance.NextPlayerStartTurn();
 
@@ -133,10 +133,10 @@ namespace Tests
             GameManager.Instance.DrawCard(DeckType.Discard);
             GameManager.Instance.DiscardCard();
 
-            Assert.That(players[0].Cards[0].Number, Is.EqualTo(1));
-            Assert.That(players[0].Cards[1].Number, Is.EqualTo(2));
-            Assert.That(players[0].Cards[2].Number, Is.EqualTo(3));
-            Assert.That(players[0].Cards[3].Number, Is.EqualTo(4));
+            Assert.That(players[0].Cards[0].CardData, Is.EqualTo(1));
+            Assert.That(players[0].Cards[1].CardData, Is.EqualTo(2));
+            Assert.That(players[0].Cards[2].CardData, Is.EqualTo(3));
+            Assert.That(players[0].Cards[3].CardData, Is.EqualTo(4));
         }
 
         [TearDown]

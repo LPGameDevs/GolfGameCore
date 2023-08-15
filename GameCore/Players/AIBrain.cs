@@ -25,12 +25,12 @@ namespace GameCore.Players
 
                 case nameof(DrawCard):
                     Console.WriteLine($"AI Brain taking action: Draw card.");
-                    PlayerEvents.DrawCard();
+                    GameManager.Instance.DrawCard();
                     break;
 
                 case nameof(DiscardCard):
                     Console.WriteLine($"AI Brain taking action: Discard card.");
-                    PlayerEvents.DiscardCard();
+                    GameManager.Instance.DiscardCard();
                     break;
 
                 case nameof(CompleteTurn):

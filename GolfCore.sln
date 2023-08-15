@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GamePlayer", "GamePlayer\Ga
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{60E5B3CC-FE03-4E30-91BA-738582F62DB9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Multiplayer", "Multiplayer\Multiplayer.csproj", "{E427D630-CC1E-405F-84D5-099E504AA0C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiTestApplication", "ApiTestApplication\ApiTestApplication.csproj", "{03C0DDAC-2E03-4405-B0C4-F8A7993F2A10}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{60E5B3CC-FE03-4E30-91BA-738582F62DB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60E5B3CC-FE03-4E30-91BA-738582F62DB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60E5B3CC-FE03-4E30-91BA-738582F62DB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E427D630-CC1E-405F-84D5-099E504AA0C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E427D630-CC1E-405F-84D5-099E504AA0C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E427D630-CC1E-405F-84D5-099E504AA0C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E427D630-CC1E-405F-84D5-099E504AA0C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03C0DDAC-2E03-4405-B0C4-F8A7993F2A10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03C0DDAC-2E03-4405-B0C4-F8A7993F2A10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03C0DDAC-2E03-4405-B0C4-F8A7993F2A10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03C0DDAC-2E03-4405-B0C4-F8A7993F2A10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

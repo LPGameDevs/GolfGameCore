@@ -50,7 +50,7 @@ namespace GameCore.Players
         }
 
 
-        public void HoldCard(int card)
+        public void HoldCard(CardDto card)
         {
             _holdingCard = new Card(card, -1, PlayerId.NoPlayer);
             OnPlayerHoldCard?.Invoke(true);
@@ -59,39 +59,39 @@ namespace GameCore.Players
         public void PlaceCard(int index)
         {
             // Swap holding card with card at index.
-            int holdingCard = _holdingCard.Number;
+            CardDto holdingCard = _holdingCard.CardData;
 
-            _holdingCard.Number = Cards[index].Number;
-            Cards[index].Number = holdingCard;
+            _holdingCard.CardData = Cards[index].CardData;
+            Cards[index].CardData = holdingCard;
 
             GameManager.Instance.DiscardCard();
         }
 
         public void DiscardCard()
         {
-            DeckManager.Instance.DiscardCard(_holdingCard.Number);
+            DeckManager.Instance.DiscardCard(_holdingCard.CardData);
             _holdingCard = null;
             OnPlayerHoldCard?.Invoke(false);
         }
 
-        public int GetHoldingCard()
+        public CardDto GetHoldingCard()
         {
-            return _holdingCard?.Number ?? -1;
+            return _holdingCard?.CardData ?? new CardDto(CardName.None, Suit.None);
         }
 
         public int Score()
         {
             int score = 0;
 
-            var cards = new Dictionary<int, int>();
+            var cards = new Dictionary<CardName, int>();
 
             // Count cards.
             foreach (var card in Cards)
             {
-                cards[card.Number] = cards.TryGetValue(card.Number, out var existingCardCount) ? existingCardCount + 1 : 1;
+                cards[card.CardData.CardName] = cards.TryGetValue(card.CardData.CardName, out var existingCardCount) ? existingCardCount + 1 : 1;
             }
 
-            foreach (KeyValuePair<int,int> cardGroup in cards)
+            foreach (KeyValuePair<CardName,int> cardGroup in cards)
             {
                 switch (cardGroup.Value)
                 {
@@ -101,7 +101,8 @@ namespace GameCore.Players
 
                     case 3:
                     case 1:
-                        score += cardGroup.Key;
+                        // @todo Add a mapping of enum to score value.
+                        score += (int) cardGroup.Key;
                         break;
 
                 }

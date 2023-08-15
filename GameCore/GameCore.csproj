@@ -11,4 +11,8 @@
       <OutputPath>/home/yanniboi/Games/Godot/GolfGame/Libraries</OutputPath>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Cards\" />
+    </ItemGroup>
+
 </Project>
