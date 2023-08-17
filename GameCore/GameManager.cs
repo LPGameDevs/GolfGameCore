@@ -1,35 +1,58 @@
 
 using System;
+using GameCore.Cards;
+using GameCore.Exceptions;
 using GameCore.Players;
 
 namespace GameCore
 {
     public class GameManager
     {
-        // Track the current match.
-        // Track the current player.
-
         private bool _isLastRound = false;
-        private bool _isGameOver = false;
         public bool IsLastRound => _isLastRound;
 
+        private bool _isGameOver = false;
         public bool IsGameOver => _isGameOver;
 
-        private readonly IStateMachine _stateMachine;
-        private readonly PlayerManager _playerManager;
+        private IStateMachine _stateMachine;
+        private PlayerManager _playerManager;
 
         private GameState _gameState;
+
+        #region GameManagement
 
         public void StartNewGame(GameState gameState)
         {
             _gameState = gameState;
-            StartListening();
-            TurnManager.Instance.Refresh();
-            _playerManager.Refresh();
+
+            // Any services the need refreshing between games should go here.
+            // Services that done need refreshing can go in the singleton constructor.
+            _stateMachine = new GolfStateMachine();
+            _playerManager = new PlayerManager();
+
+            // Concepts:
+            // - Initialise is when a new class is created, basic setup.
+            // - Refresh is when a class is reset to values provided by the game state.
+            // @todo Is there a difference between these two concepts?
+
+            // @todo Should these be singletons? Why?
+            DeckManager.Instance.Initialize(_gameState);
+            TurnManager.Instance.Initialize();
+
+            _playerManager.Initialize(_gameState);
+            _stateMachine.Initialize();
+
             _stateMachine.StartNewGame();
-            DeckManager.Instance.TurnOverDeck();
+
+            // @todo this happens on server.
+            // DeckManager.Instance.TurnOverDeck();
 
             StartNewMatch();
+        }
+
+        public void RejoinGame(GameState gameState)
+        {
+            // @todo Similar to starting a new game, but game state is already in progress.
         }
 
         public void StartNewMatch()
@@ -43,15 +66,35 @@ namespace GameCore
             _stateMachine.StartNewTurn();
         }
 
-        private void StartLastRound()
+        public void StartLastRound()
         {
             _isLastRound = true;
+            PlayerEvents.CompleteTurn();
         }
 
-        public string GetCurrentState()
+        public void GameOver()
         {
-            return _stateMachine.GetCurrentState();
+            _isGameOver = true;
+
+            StopPlaying();
         }
+
+        /**
+         * This method is called when the player stops engaging in an active game.
+         */
+        public void StopPlaying()
+        {
+            _stateMachine.StopPlaying();
+        }
+
+        public void UpdateGameFromState(GameState gameState)
+        {
+            DeckManager.Instance.Refresh();
+        }
+
+        #endregion
+
+        #region PlayerActions
 
         public Player[] GetPlayers()
         {
@@ -60,49 +103,6 @@ namespace GameCore
                 throw new NoPlayersException();
             }
             return _playerManager.GetPlayers();
-        }
-
-        public void StartListening()
-        {
-            _stateMachine.StartListening();
-            PlayerEvents.OnPlayerCallLastRound += StartLastRound;
-        }
-
-        public void StopListening()
-        {
-            _stateMachine.StopListening();
-            PlayerEvents.OnPlayerCallLastRound -= StartLastRound;
-        }
-
-        #region Singleton
-
-        private static GameManager _instance;
-
-        private GameManager()
-        {
-            IStateMachine stateMachine = new GolfStateMachine();
-            _stateMachine = stateMachine;
-            _playerManager = new PlayerManager();
-        }
-
-        public static GameManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new GameManager();
-                }
-
-                return _instance;
-            }
-        }
-
-        #endregion
-
-        public void GameOver()
-        {
-            _isGameOver = true;
         }
 
         public Player GetPlayer(PlayerId id)
@@ -123,24 +123,22 @@ namespace GameCore
             var player = GetPlayer(currentPlayer);
             player.HoldCard(card);
 
-            PlayerEvents.DrawCard();
-
             Console.WriteLine($"DrawCard: {card}");
 
             return true;
         }
 
-        public void PlaceCard(Card card)
+        public bool PlaceCard(Card card)
         {
             if (GetCurrentState() != nameof(DiscardCard))
             {
-                return;
+                return false;
             }
 
             var currentPlayer = TurnManager.Instance.GetCurrentTurn();
             if (card.Player != currentPlayer)
             {
-                return;
+                return false;
             }
 
 
@@ -148,14 +146,15 @@ namespace GameCore
             player.PlaceCard(card.Index);
 
             Console.WriteLine($"PlaceCard: {card}");
+            return true;
 
         }
 
-        public void DiscardCard()
+        public bool DiscardCard()
         {
             if (GetCurrentState() != nameof(DiscardCard))
             {
-                return;
+                return false;
             }
 
             var currentPlayer = TurnManager.Instance.GetCurrentTurn();
@@ -164,31 +163,53 @@ namespace GameCore
 
 
             player.DiscardCard();
-
-            PlayerEvents.DiscardCard();
+            return true;
         }
 
         public CardDto[] GetCards()
         {
-            return _gameState.deck;
+            return _gameState.deck.Cards;
         }
-    }
 
-    public class NoPlayersException : Exception
-    {
-    }
-
-    public class Card
-    {
-        public int Index { get; private set; }
-        public CardDto CardData { get; set; }
-        public PlayerId Player { get; set; }
-
-        public Card(CardDto cardData, int index, PlayerId player)
+        public CardDto[] GetPlayerCards(PlayerId id)
         {
-            CardData = cardData;
-            Index = index;
-            Player = player;
+            int playerId = (int) id - 1;
+            string key = playerId.ToString();
+            return _gameState.hands[key];
         }
+
+        #endregion
+
+
+        public string GetCurrentState()
+        {
+            return _stateMachine.GetCurrentState();
+        }
+
+
+        #region Singleton
+
+        private static GameManager _instance;
+
+        private GameManager()
+        {
+
+        }
+
+        public static GameManager Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new GameManager();
+                }
+
+                return _instance;
+            }
+        }
+
+        #endregion
+
     }
 }

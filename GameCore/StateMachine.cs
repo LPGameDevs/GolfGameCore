@@ -14,15 +14,17 @@ namespace GameCore
             return _currentState.GetType().Name;
         }
 
-        protected void TransitionTo(IState state)
+        protected void TransitionTo(IState nextState)
         {
-            if (_currentState != null)
+            var previousState = _currentState;
+            nextState.Enter();
+            _currentState = nextState;
+
+            if (previousState != null)
             {
-                OnTransitionState?.Invoke(_currentState.GetType().Name, state.GetType().Name);
+                OnTransitionState?.Invoke(previousState.GetType().Name, _currentState.GetType().Name);
             }
 
-            _currentState = state;
-            _currentState.Enter();
         }
 
         public abstract void StartNewGame();
@@ -31,9 +33,9 @@ namespace GameCore
 
         public abstract void StartNewTurn();
 
-        public abstract void StartListening();
+        public abstract void Initialize();
 
-        public abstract void StopListening();
+        public abstract void StopPlaying();
     }
 
     public interface IStateMachine
@@ -43,8 +45,8 @@ namespace GameCore
         void StartNewMatch();
         void StartNewTurn();
 
-        void StartListening();
-        void StopListening();
+        void Initialize();
+        void StopPlaying();
     }
 
     public interface IState

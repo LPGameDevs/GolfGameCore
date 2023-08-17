@@ -8,7 +8,6 @@ namespace GameCore
         public static event Action OnPlayerViewCards;
         public static event Action OnPlayerDrawCard;
         public static event Action OnPlayerDiscardCard;
-        public static event Action OnPlayerCallLastRound;
         public static event Action OnPlayerCompleteTurn;
 
         public static void ViewCards()
@@ -28,22 +27,12 @@ namespace GameCore
 
         public static void CallLastRound()
         {
-            OnPlayerCallLastRound?.Invoke();
+            GameManager.Instance.StartLastRound();
         }
 
         public static void CompleteTurn()
         {
             OnPlayerCompleteTurn?.Invoke();
-        }
-
-        public void StartListening()
-        {
-            OnPlayerCallLastRound += CompleteTurn;
-        }
-
-        public void StopListening()
-        {
-            OnPlayerCallLastRound -= CompleteTurn;
         }
 
     }

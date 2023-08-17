@@ -6,10 +6,15 @@ namespace GameCore
     {
         public string id;
         public string[] users;
-        public CardDto[] deck;
-        public CardDto[] discard;
+        public DeckDto deck;
+        public DeckDto discard;
         public Dictionary<string, CardDto[]> hands;
         public int turn;
+    }
+
+    public class DeckDto
+    {
+        public CardDto[] Cards;
     }
 
     public class CardDto

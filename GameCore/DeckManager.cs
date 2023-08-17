@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GameCore.Exceptions;
 
 namespace GameCore
 {
@@ -16,7 +17,10 @@ namespace GameCore
      */
     public class DeckManager
     {
+        public static event Action OnRefresh;
         public static event Action OnCardDiscarded;
+
+        private GameState _gameState;
 
         private Queue<CardDto> _deck = new Queue<CardDto>();
         private LinkedList<CardDto> _discard = new LinkedList<CardDto>();
@@ -53,8 +57,8 @@ namespace GameCore
                 throw new DrawFromEmptyDiscardException();
             }
 
-            CardDto card = _discard.Last.Value;
-            _discard.RemoveLast();
+            CardDto card = _discard.First.Value;
+            _discard.RemoveFirst();
             return card;
         }
 
@@ -65,16 +69,16 @@ namespace GameCore
                 throw new DrawFromEmptyDiscardException();
             }
 
-            return _discard.Last.Value;
+            return _discard.First.Value;
         }
 
         public void DiscardCard(CardDto card)
         {
-            _discard.AddLast(card);
+            _discard.AddFirst(card);
             OnCardDiscarded?.Invoke();
         }
 
-        public void AddCards(CardDto[] cards)
+        public void AddDeckCards(CardDto[] cards)
         {
             _deck.Clear();
 
@@ -84,10 +88,26 @@ namespace GameCore
             }
         }
 
+        public void AddDiscardCards(CardDto[] cards)
+        {
+            _discard.Clear();
+
+            foreach (var card in cards)
+            {
+                // @todo is this the right way around?
+                _discard.AddLast(card);
+            }
+        }
+
         public void Shuffle()
         {
             _deck.Clear();
+
             // @todo Shuffle discard pile into deck.
+            foreach (var card in _discard)
+            {
+                _deck.Enqueue(card);
+            }
         }
 
         public void TurnOverDeck()
@@ -108,10 +128,6 @@ namespace GameCore
 
         private static DeckManager _instance;
 
-        private DeckManager(CardDto[] cards)
-        {
-            AddCards(cards);
-        }
 
         public static DeckManager Instance
         {
@@ -119,8 +135,7 @@ namespace GameCore
             {
                 if (_instance == null)
                 {
-                    CardDto[] cards = GameManager.Instance.GetCards();
-                    _instance = new DeckManager(cards);
+                    _instance = new DeckManager();
                 }
 
                 return _instance;
@@ -128,9 +143,33 @@ namespace GameCore
         }
 
         #endregion
-    }
 
-    public class DrawFromEmptyDiscardException : Exception
-    {
+        public void Initialize(GameState game)
+        {
+            _gameState = game;
+
+            CardDto[] cards = game.deck.Cards;
+
+            if (cards == null || cards.Length == 0)
+            {
+                throw new TryingToCreateDeckManagerWithoutCardsException();
+            }
+
+            CardDto[] discardCards = game.discard.Cards;
+
+            if (discardCards == null || discardCards.Length == 0)
+            {
+                throw new TryingToCreateDeckManagerWithoutDiscardException();
+            }
+
+            Refresh();
+        }
+
+        public void Refresh()
+        {
+            AddDeckCards(_gameState.deck.Cards);
+            AddDiscardCards(_gameState.discard.Cards);
+            OnRefresh?.Invoke();
+        }
     }
 }

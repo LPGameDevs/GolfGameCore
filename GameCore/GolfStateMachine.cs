@@ -54,7 +54,7 @@ namespace GameCore
             // No state transitions on complete turn.
         }
 
-        public override void StartListening()
+        public override void Initialize()
         {
             ViewCards.OnExit += OnExitViewCards;
             DrawCard.OnExit += OnExitDrawCard;
@@ -62,7 +62,7 @@ namespace GameCore
             CompleteTurn.OnExit += OnExitCompleteTurn;
         }
 
-        public override void StopListening()
+        public override void StopPlaying()
         {
             ViewCards.OnExit -= OnExitViewCards;
             DrawCard.OnExit -= OnExitDrawCard;

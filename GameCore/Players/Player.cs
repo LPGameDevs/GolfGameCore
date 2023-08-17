@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GameCore.Cards;
 
 namespace GameCore.Players
 {
@@ -13,8 +14,9 @@ namespace GameCore.Players
 
         public int TurnsPlayed { get; private set; } = 0;
 
-        public Card[] Cards { get; }
+        public Card[] Cards { get; private set; }
         public PlayerId Id { get; private set; }
+        public string NetworkId { get; private set; }
         public bool CanGo => _brain.CanGo();
 
         private Card _holdingCard = null;
@@ -24,13 +26,21 @@ namespace GameCore.Players
             _brain = brain;
             _brain.SetPlayer(this);
             Id = id;
+        }
 
+        public void SetNetworkId(string id)
+        {
+            NetworkId = id;
+        }
+
+        public void SetCards(CardDto[] cards)
+        {
             Cards = new[]
             {
-                new Card(DeckManager.Instance.DrawCard(), 0, id),
-                new Card(DeckManager.Instance.DrawCard(), 1, id),
-                new Card(DeckManager.Instance.DrawCard(), 2, id),
-                new Card(DeckManager.Instance.DrawCard(), 3, id),
+                new Card(cards[0], 0, Id),
+                new Card(cards[1], 1, Id),
+                new Card(cards[2], 2, Id),
+                new Card(cards[3], 3, Id),
             };
         }
 

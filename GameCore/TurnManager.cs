@@ -22,9 +22,20 @@ namespace GameCore
         public static event Action<PlayerId,PlayerId> OnTransitionPlayerTurn;
 
         private Player _currentPlayer;
+
         private PlayerId _currentPlayerName = PlayerId.NoPlayer;
 
-        // This should probably be private...
+        public void Initialize()
+        {
+            Refresh();
+        }
+
+        public void Refresh()
+        {
+            _currentPlayer = null;
+            _currentPlayerName = PlayerId.NoPlayer;
+        }
+
         public void NextPlayerStartTurn()
         {
             PlayerId previousPlayer = _currentPlayerName;
@@ -67,12 +78,6 @@ namespace GameCore
         public PlayerId GetCurrentTurn()
         {
             return _currentPlayerName;
-        }
-
-        public void Refresh()
-        {
-            _currentPlayer = null;
-            _currentPlayerName = PlayerId.NoPlayer;
         }
 
         public void StartListening()
